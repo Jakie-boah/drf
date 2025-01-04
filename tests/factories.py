@@ -27,3 +27,14 @@ class ProductFactory(factory.django.DjangoModelFactory):
     brand = factory.SubFactory(BrandFactory)
     category = factory.SubFactory(CategoryFactory)
     is_active = True
+
+
+class ProductLineFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProductLine
+
+    price = 10.00
+    sku = "1234"
+    stock_qty = 1
+    product = factory.SubFactory(ProductFactory)
+    is_active = True
