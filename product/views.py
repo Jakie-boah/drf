@@ -43,7 +43,7 @@ class ProductView(viewsets.ViewSet):
     A simple Viewset for viewing products
     """
 
-    queryset = Product.objects.all()
+    queryset = Product.objects.isactive()
     lookup_field = 'slug'
 
     def retrieve(self, request, slug=None):
