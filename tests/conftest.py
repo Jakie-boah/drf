@@ -6,6 +6,7 @@ from .factories import *
 register(CategoryFactory)
 register(BrandFactory)
 register(ProductFactory)
+register(ProductLineFactory)
 
 
 @pytest.fixture
