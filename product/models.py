@@ -67,3 +67,19 @@ class ProductLine(models.Model):
 
     def __str__(self):
         return str(self.sku)
+
+
+class ProductImage(models.Model):
+    alternative_text = models.CharField(max_length=100)
+    url = models.ImageField(upload_to=None, default='text.jpg')
+    productline = models.ForeignKey(ProductLine, on_delete=models.CASCADE, related_name='product_image')
+    order = OrderField(unique_for_field='productline', blank=True, null=True)
+
+    def clean(self, exclude=None):
+        qs = ProductImage.objects.filter(productline=self.productline)
+        for obj in qs:
+            if self.id != obj.id and self.order == obj.order:
+                raise ValidationError("Duplicate order value ")
+
+    def __str__(self):
+        return str(self.url)
