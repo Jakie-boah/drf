@@ -38,3 +38,12 @@ class ProductLineFactory(factory.django.DjangoModelFactory):
     stock_qty = 1
     product = factory.SubFactory(ProductFactory)
     is_active = True
+
+
+class ProductImageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProductImage
+
+    alternative_text = factory.Faker('text')
+    url = 'test.jpg'
+    productline = factory.SubFactory(ProductLineFactory)

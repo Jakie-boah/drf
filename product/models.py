@@ -86,4 +86,4 @@ class ProductImage(models.Model):
                 raise ValidationError("Duplicate order value ")
 
     def __str__(self):
-        return str(self.url)
+        return str(self.pk)
