@@ -1,3 +1,4 @@
+from django.db.models import Prefetch
 from rest_framework import viewsets
 from rest_framework.response import Response
 from .models import Category, Brand, Product
@@ -44,17 +45,23 @@ class ProductView(viewsets.ViewSet):
     """
 
     queryset = Product.objects.isactive()
-    lookup_field = 'slug'
+    lookup_field = "slug"
 
     def retrieve(self, request, slug=None):
-        serializer = ProductSerializer(self.queryset.filter(slug=slug).select_related('category', 'brand'), many=True)
+        serializer = ProductSerializer(
+            Product.objects.filter(slug=slug)
+            .select_related("category", "brand")
+            .prefetch_related(Prefetch("product_lines"))
+            .prefetch_related(Prefetch("product_lines__product_image")),
+            many=True,
+        )
         data = Response(serializer.data)
 
-        # q = list(connection.queries)
-        # print(len(q))
-        # for qq in q:
-        #     sqlformatted = format(str(qq['sql']), reindent=True)
-        #     print(highlight(sqlformatted, SqlLexer(), TerminalFormatter()))
+        q = list(connection.queries)
+        print(len(q))
+        for qq in q:
+            sqlformatted = format(str(qq['sql']), reindent=True)
+            print(highlight(sqlformatted, SqlLexer(), TerminalFormatter()))
 
         return data
 
@@ -63,14 +70,12 @@ class ProductView(viewsets.ViewSet):
         serializer = ProductSerializer(self.queryset, many=True)
         return Response(serializer.data)
 
-    @action(
-        methods=["get"],
-        detail=False,
-        url_path=r"category/(?P<slug>[\w-]+)"
-    )
+    @action(methods=["get"], detail=False, url_path=r"category/(?P<slug>[\w-]+)")
     def list_product_by_category_slug(self, request, slug=None):
         """
-          An endpoint to return products by category
-          """
-        serializer = ProductSerializer(self.queryset.filter(category__slug=slug), many=True)
+        An endpoint to return products by category
+        """
+        serializer = ProductSerializer(
+            self.queryset.filter(category__slug=slug), many=True
+        )
         return Response(serializer.data)

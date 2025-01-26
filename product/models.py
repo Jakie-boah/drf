@@ -54,9 +54,11 @@ class ProductLine(models.Model):
     price = models.DecimalField(decimal_places=2, max_digits=5)
     sku = models.CharField(max_length=100)
     stock_qty = models.IntegerField()
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_lines')
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="product_lines"
+    )
     is_active = models.BooleanField(default=False)
-    order = OrderField(unique_for_field='product', blank=True, null=True)
+    order = OrderField(unique_for_field="product", blank=True, null=True)
     objects = ActiveQuerySet.as_manager()
 
     def clean(self, exclude=None):
@@ -71,9 +73,11 @@ class ProductLine(models.Model):
 
 class ProductImage(models.Model):
     alternative_text = models.CharField(max_length=100)
-    url = models.ImageField(upload_to=None, default='text.jpg')
-    productline = models.ForeignKey(ProductLine, on_delete=models.CASCADE, related_name='product_image')
-    order = OrderField(unique_for_field='productline', blank=True, null=True)
+    url = models.ImageField(upload_to=None, default="text.jpg")
+    productline = models.ForeignKey(
+        ProductLine, on_delete=models.CASCADE, related_name="product_image"
+    )
+    order = OrderField(unique_for_field="productline", blank=True, null=True)
 
     def clean(self, exclude=None):
         qs = ProductImage.objects.filter(productline=self.productline)

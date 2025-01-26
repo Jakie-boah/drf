@@ -21,7 +21,9 @@ class OrderField(models.PositiveIntegerField):
             return [
                 checks.Error("OrderField must define a 'unique_for_field' attribute")
             ]
-        elif self.unique_for_field not in [f.name for f in self.model._meta.get_fields()]:
+        elif self.unique_for_field not in [
+            f.name for f in self.model._meta.get_fields()
+        ]:
             return [
                 checks.Error("OrderField entered does not match an existing field.")
             ]
@@ -34,13 +36,20 @@ class OrderField(models.PositiveIntegerField):
             qs = self.model.objects.all()
 
             try:
-                query = {self.unique_for_field: getattr(model_instance, self.unique_for_field)}
+                query = {
+                    self.unique_for_field: getattr(
+                        model_instance, self.unique_for_field
+                    )
+                }
                 print(query)
                 qs = qs.filter(**query)
                 last_item = qs.latest(self.attname)
                 value = last_item.order + 1
 
             except ObjectDoesNotExist:
+                value = 1
+
+            except TypeError:
                 value = 1
 
             return value

@@ -14,7 +14,7 @@ class EditLinkInLine:
         if instance.pk:
             return mark_safe('<a href="{u}">edit</a>'.format(u=url))
         else:
-            return ''
+            return ""
 
 
 class ProductImageInline(admin.TabularInline):
@@ -23,13 +23,11 @@ class ProductImageInline(admin.TabularInline):
 
 class ProductLineInline(EditLinkInLine, admin.TabularInline):
     model = ProductLine
-    readonly_fields = ('edit',)
+    readonly_fields = ("edit",)
 
 
 class ProductAdmin(admin.ModelAdmin):
-    inlines = [
-        ProductLineInline
-    ]
+    inlines = [ProductLineInline]
 
 
 class ProductLineAdmin(admin.ModelAdmin):
